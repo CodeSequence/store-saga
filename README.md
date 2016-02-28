@@ -1,5 +1,7 @@
 # store-saga
-An Rx implementation of redux-saga for ngrx/store
+An Rx implementation of redux-saga for ngrx/store. 
+
+Based on [redux-saga-rxjs](https://github.com/salsita/redux-saga-rxjs) by Salsita, with inspiration from [redux-saga](https://github.com/yelouafi/redux-saga) by Yelouafi.
 
 ## Usage
 `store-saga` depends on @ngrx/store and Angular 2. After configuring @ngrx/store, install `store-saga`:
