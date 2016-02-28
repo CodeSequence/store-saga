@@ -1,5 +1,5 @@
 # store-saga
-An Rx implementation of redux-saga for ngrx/store. 
+An Rx implementation of redux-saga for @ngrx/store and Angular 2. 
 
 Based on [redux-saga-rxjs](https://github.com/salsita/redux-saga-rxjs) by Salsita, with inspiration from [redux-saga](https://github.com/yelouafi/redux-saga) by Yelouafi.
 
@@ -49,9 +49,11 @@ export function authenticate(http: Http): Saga<State>{
 
 Then create a provider for the saga with `useSagaFactory`:
 ```ts
-import {useSagaFactory} from 'store-saga';
+import sagaMiddlewareProvider, {useSagaFactory} from 'store-saga';
 
 bootstrap(App, [
+  provideStore(reducer, initialState),
+  sagaMiddlewareProvider,
   useSagaFactory(authenticate, [ Http ])
-])
+]);
 ```
