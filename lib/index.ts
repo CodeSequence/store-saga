@@ -1,7 +1,9 @@
-import 'rxjs/add/observable/zip';
-import 'rxjs/add/observable/merge';
+import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeAll';
+import 'rxjs/add/operator/withLatestFrom';
 import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
 import {OpaqueToken, provide, Provider} from 'angular2/core';
 import {Action, Store, Dispatcher, POST_MIDDLEWARE} from '@ngrx/store'
 
@@ -24,15 +26,18 @@ export default provide(POST_MIDDLEWARE, {
   deps: [ Dispatcher, SAGA_FUNCTIONS ],
   useFactory(dispatcher: Dispatcher<any>, sagas: Saga<any>[]){
     return function(state: Observable<any>){
-      const iterable = Observable
-        .zip(state, dispatcher)
-        .map(([state, action]) => ({ state, action }));
+      const watchState$ = new Subject();
 
-      Observable
-        .merge(...sagas.map(saga => saga(iterable)))
+      const iterable = dispatcher
+        .withLatestFrom(watchState$)
+        .map(([ action, state ]) => ({ action, state }));
+
+      Observable.of(...sagas)
+        .map(saga => saga(iterable))
+        .mergeAll()
         .subscribe(dispatcher);
 
-      return state;
+      return state.do(value => watchState$.next(value));
     }
   }
 });
