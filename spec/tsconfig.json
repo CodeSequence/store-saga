@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"target": "ES5",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"outDir": "../tmp",
+		"declaration": true
+	},
+	"files": [
+    "../typings/main.d.ts",
+		"index.spec.ts"
+	],
+	"exclude": [
+		"node_modules"
+	]
+}
