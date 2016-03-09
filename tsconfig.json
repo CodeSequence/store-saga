@@ -10,7 +10,11 @@
 	},
 	"files": [
     "typings/main.d.ts",
-    "lib/index.ts"
+    "lib/index.ts",
+    "lib/runner.ts",
+    "lib/interfaces.ts",
+    "lib/util.ts",
+		"lib/testing.ts"
 	],
 	"exclude": [
 		"node_modules"

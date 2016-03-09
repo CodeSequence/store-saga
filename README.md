@@ -1,5 +1,5 @@
 # store-saga
-An Rx implementation of redux-saga for @ngrx/store and Angular 2. 
+An Rx implementation of redux-saga for @ngrx/store and Angular 2.
 
 Based on [redux-saga-rxjs](https://github.com/salsita/redux-saga-rxjs) by Salsita, with inspiration from [redux-saga](https://github.com/yelouafi/redux-saga) by Yelouafi.
 
@@ -12,48 +12,29 @@ npm install store-saga --save
 
 Write a saga:
 ```ts
-import {Saga} from 'store-saga';
+import {createSaga} from 'store-saga';
 
-export const Increment: Saga = iterable => iterable
-  .filter(({ state, action }) => action.type === 'DECREMENT')
-  .map(() => ({ type: 'INCREMENT' }));
+export const increment = createSaga(function(){
+  return saga$ => saga$
+    .filter(saga => saga.action.type === 'DECREMENT')
+    .map(() => {
+      return { type: 'INCREMENT'}
+    });
+});
 ```
 
-Bootstrap your app using the saga middleware provider and your saga:
+Install the store-saga middleware in the same place you provide your ngrx/store:
 
 ```ts
-import sagaMiddlewareProvider, { useSaga } from 'store-saga';
+import {installSagaMiddleware} from 'store-saga';
 
 bootstrap(App, [
   provideStore(reducer, initialState),
-  sagaMiddlewareProvider,
-  useSaga(increment)
+  installSagaMiddleware(increment)
 ]);
 ```
 
-## Saga Factories
-To run your saga in the context of the injector, you can write saga factories instead:
-
-```ts
-import {Saga} from 'store-saga';
-import {Http} from 'angular2/http';
-
-export function authenticate(http: Http): Saga<State>{
-  return iterable => iterable
-    .filter(({ action }) => action.type === 'GET_USER')
-    .flatMap(() => http.get('/user'))
-    .map(res => res.json())
-    .map(user => ({ type: 'USER_RETRIEVED', user }));
-}
-```
-
-Then create a provider for the saga with `useSagaFactory`:
-```ts
-import sagaMiddlewareProvider, {useSagaFactory} from 'store-saga';
-
-bootstrap(App, [
-  provideStore(reducer, initialState),
-  sagaMiddlewareProvider,
-  useSagaFactory(authenticate, [ Http ])
-]);
-```
+## Documentation
+* [Utilities](docs/utilities.md) - Information on various utility functions
+* [SagaRunner](docs/saga-runner.md) - Use the `SagaRunner` service to run, stop, and pause saga effects dynamically
+* [Testing](docs/testing.md) - Learn how to test saga effects using the provided `SagaTester` service

@@ -1,6 +1,6 @@
 {
   "name": "store-saga",
-  "version": "0.0.4",
+  "version": "1.0.0-beta.1",
   "description": "An Rx implementation of redux-saga for @ngrx/store",
   "main": "index.js",
   "scripts": {
