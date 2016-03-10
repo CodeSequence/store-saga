@@ -38,9 +38,9 @@ export function installSagaMiddleware(...sagas: Provider[]): Provider[] {
 }
 
 
-export function whenAction(type: string) {
+export function whenAction(...types: string[]) {
   return function(t: SagaIteration<any>): boolean {
-    return t.action.type === type;
+    return types.indexOf(t.action.type) >= 0;
   }
 }
 

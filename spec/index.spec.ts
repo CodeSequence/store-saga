@@ -188,4 +188,27 @@ describe('@ngrx/store Saga Middleware', function() {
       expect(child['_run']).not.toHaveBeenCalled();
     });
   });
+
+  describe('Utilities', () => {
+    describe('whenAction', () => {
+      const iteration = (type: string) => ({ action: { type }, state: {} });
+
+      it('should create a filter that matches the provided action type', () => {
+        const filter = whenAction('demo');
+
+        expect(filter(iteration('fail'))).toBe(false);
+        expect(filter(iteration('demo'))).toBe(true);
+      });
+
+      it('should match multiple action types', () => {
+        const filter = whenAction('a', 'b', 'c');
+
+        expect(filter(iteration('a'))).toBe(true);
+        expect(filter(iteration('b'))).toBe(true);
+        expect(filter(iteration('c'))).toBe(true);
+
+        expect(filter(iteration('d'))).toBe(false);
+      });
+    });
+  });
 });
