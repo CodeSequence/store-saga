@@ -1,6 +1,6 @@
 {
   "name": "store-saga",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "An Rx implementation of redux-saga for @ngrx/store",
   "main": "index.js",
   "scripts": {
@@ -29,7 +29,7 @@
   "homepage": "https://github.com/MikeRyan52/store-saga#readme",
   "peerDependencies": {
     "rxjs": "^5.0.0-beta.2",
-    "angular2": "2.0.0-beta.7",
+    "angular2": "^2.0.0-beta.8",
     "@ngrx/store": "^1.3.1"
   },
   "devDependencies": {

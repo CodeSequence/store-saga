@@ -39,7 +39,7 @@ describe('@ngrx/store Saga Middleware', function() {
 
     it('should should pass a saga$ observable with the latest action and state', function() {
       let state: number, action: Action;
-      const saga = createSaga(() => saga$ => saga$.do(saga => {
+      const saga = createSaga<number>(() => saga$ => saga$.do(saga => {
         state = saga.state;
         action = saga.action
       })
@@ -60,7 +60,7 @@ describe('@ngrx/store Saga Middleware', function() {
 
     it('should push latest iterable$ even if state did not change', function() {
       let state: number, action: Action;
-      const saga = createSaga(() => saga$ => saga$.do(saga => {
+      const saga = createSaga<number>(() => saga$ => saga$.do(saga => {
         state = saga.state;
         action = saga.action
       })
