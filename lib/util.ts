@@ -53,3 +53,7 @@ export function toPayload(t: SagaIteration<any>): any {
 export function put(action: Action): Observable<Action> {
   return Observable.of(action);
 }
+
+export function all() {
+  return false;
+}
