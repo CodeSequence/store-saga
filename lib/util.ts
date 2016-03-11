@@ -1,6 +1,8 @@
 import 'rxjs/add/operator/withLatestFrom';
+import 'rxjs/add/observable/of';
 import {Provider, provide, OpaqueToken, Injector} from 'angular2/core';
 import {POST_MIDDLEWARE, Dispatcher, Action, Middleware} from '@ngrx/store';
+import {Observable} from 'rxjs/Observable';
 
 import {SagaRunner} from './runner';
 import {SagaIteration, Saga, SagaFactory} from './interfaces';
@@ -46,4 +48,8 @@ export function whenAction(...types: string[]) {
 
 export function toPayload(t: SagaIteration<any>): any {
   return t.action.payload;
+}
+
+export function put(action: Action): Observable<Action> {
+  return Observable.of(action);
 }
