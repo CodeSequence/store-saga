@@ -1,25 +1,44 @@
-import {Subscription} from 'rxjs/Subscription';
-import {Subject} from 'rxjs/Subject';
-import {Injectable, OpaqueToken, provide, Provider, Injector, Inject, SkipSelf, Optional} from 'angular2/core';
-import {Action, Dispatcher} from '@ngrx/store';
+import 'rxjs/add/observable/from';
+import { async } from 'rxjs/scheduler/async';
+import { Subscription } from 'rxjs/Subscription';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
+import {
+  Injectable,
+  OpaqueToken,
+  provide,
+  Provider,
+  Injector,
+  Inject,
+  SkipSelf,
+  Optional
+} from 'angular2/core';
+import { Action, Dispatcher } from '@ngrx/store';
 
-import {Saga} from './interfaces';
+import { Saga } from './interfaces';
+
+export const INIT_SAGAS = new OpaqueToken('@ngrx/store/sagas Bootstrap');
 
 @Injectable()
 export class SagaRunner {
-  private _iterable: Subject<any>;
+  protected _iterable: Subject<any>;
   private _resolvedSagas: Map<Provider, Saga<any>>;
   private _runningSagas: Map<Saga<any>, Subscription>;
 
   constructor(
     private _injector: Injector,
     @Inject(Dispatcher) private _dispatcher: Subject<Action>,
-    @Optional() @SkipSelf() private _parent: SagaRunner
+    @Optional() @SkipSelf() private _parent: SagaRunner,
+    @Optional() @Inject(INIT_SAGAS) initSagas: Provider[]
   ) {
     if( !_parent ) {
       this._iterable = new Subject();
       this._resolvedSagas = new Map<Provider, Saga<any>>();
       this._runningSagas = new Map<Saga<any>, Subscription>();
+
+      if( !!initSagas ) {
+        initSagas.forEach(saga => this.run(saga));
+      }
     }
   }
 
@@ -35,6 +54,10 @@ export class SagaRunner {
     this._next(update);
   }
 
+  protected _connect(saga: Saga<any>): Subscription {
+    return Observable.from(saga(this._iterable), async).subscribe(this._dispatcher);
+  }
+
   private _run(saga: Provider, injector: Injector){
     if( !this._resolvedSagas.has(saga) ) {
       this._resolvedSagas.set(saga, injector.resolveAndInstantiate(saga));
@@ -43,8 +66,7 @@ export class SagaRunner {
     const resolved = this._resolvedSagas.get(saga);
 
     if( !this._runningSagas.has(resolved) ) {
-      const subscription = resolved(this._iterable).subscribe(this._dispatcher);
-      this._runningSagas.set(resolved, subscription);
+      this._runningSagas.set(resolved, this._connect(resolved));
     }
     else {
       throw new Error('Saga Effect is already running');
