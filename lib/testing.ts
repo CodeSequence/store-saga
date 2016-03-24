@@ -1,7 +1,11 @@
-import {BehaviorSubject} from 'rxjs/subject/BehaviorSubject';
-import {Injectable, Injector} from 'angular2/core';
+import { asap } from 'rxjs/scheduler/asap';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { BehaviorSubject } from 'rxjs/subject/BehaviorSubject';
+import { Injectable, Injector } from 'angular2/core';
 
-import {SagaRunner} from './runner';
+import { Saga } from './interfaces';
+import { SagaRunner } from './runner';
 
 @Injectable()
 export class SagaTester extends SagaRunner{
@@ -9,24 +13,28 @@ export class SagaTester extends SagaRunner{
 
   constructor(injector: Injector){
     const dispatcher = new BehaviorSubject(undefined);
-    super(injector, dispatcher, undefined);
+    super(injector, dispatcher, undefined, []);
 
     this.output = dispatcher;
-  }
-
-  sendAction(action: any) {
-    this.next({ state: {}, action });
-  }
-
-  sendState(state: any) {
-    this.next({ state, action: {} });
   }
 
   send(state: any, action: any) {
     this.next({ state, action });
   }
 
+  sendAction(action: any) {
+    this.send({}, action);
+  }
+
+  sendState(state: any) {
+    this.send(state, {});
+  }
+
   get last(){
     return this.output.getValue();
+  }
+
+  protected _connect(saga: Saga<any>): Subscription {
+    return Observable.from(saga(this._iterable), asap).subscribe(this.output);
   }
 }
