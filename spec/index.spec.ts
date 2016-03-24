@@ -1,8 +1,4 @@
-require('core-js');
-require('reflect-metadata');
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/observable/empty';
+import './test_harness';
 import {Injector, Provider} from 'angular2/core';
 import {Observable} from 'rxjs/Observable';
 import {provideStore, Store, Action, Dispatcher, usePostMiddleware} from '@ngrx/store';
@@ -186,29 +182,6 @@ describe('@ngrx/store Saga Middleware', function() {
       expect(child['_stop']).not.toHaveBeenCalled();
       expect(runner.run).toHaveBeenCalled();
       expect(child['_run']).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Utilities', () => {
-    describe('whenAction', () => {
-      const iteration = (type: string) => ({ action: { type }, state: {} });
-
-      it('should create a filter that matches the provided action type', () => {
-        const filter = whenAction('demo');
-
-        expect(filter(iteration('fail'))).toBe(false);
-        expect(filter(iteration('demo'))).toBe(true);
-      });
-
-      it('should match multiple action types', () => {
-        const filter = whenAction('a', 'b', 'c');
-
-        expect(filter(iteration('a'))).toBe(true);
-        expect(filter(iteration('b'))).toBe(true);
-        expect(filter(iteration('c'))).toBe(true);
-
-        expect(filter(iteration('d'))).toBe(false);
-      });
     });
   });
 });

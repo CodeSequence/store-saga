@@ -4,9 +4,10 @@
   "description": "An Rx implementation of redux-saga for @ngrx/store",
   "main": "index.js",
   "scripts": {
-    "pretest": "rm -rf ./tmp && tsc -p spec",
-    "test": "jasmine",
-    "prebuild": "rm -rf ./dist",
+    "clean": "rm -rf ./tmp && rm -rf ./dist",
+    "pretest": "npm run clean && tsc -p spec",
+    "test": "istanbul cover -x '**/spec/**' jasmine",
+    "prebuild": "npm run clean",
     "build": "tsc",
     "postbuild": "cp ./{readme.md,package.json} ./dist"
   },
@@ -34,7 +35,9 @@
   },
   "devDependencies": {
     "core-js": "^2.1.3",
+    "istanbul": "^0.4.2",
     "jasmine": "^2.4.1",
-    "ts-node": "^0.5.5"
+    "ts-node": "^0.5.5",
+    "typescript": "^1.8.9"
   }
 }

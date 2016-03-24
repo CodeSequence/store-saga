@@ -14,7 +14,8 @@
     "lib/runner.ts",
     "lib/interfaces.ts",
     "lib/util.ts",
-		"lib/testing.ts"
+		"lib/testing.ts",
+		"lib/middleware.ts"
 	],
 	"exclude": [
 		"node_modules"
