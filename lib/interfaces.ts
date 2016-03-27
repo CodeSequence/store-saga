@@ -1,5 +1,5 @@
-import {Observable} from 'rxjs/Observable';
-import {Action} from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+import { Action } from '@ngrx/store';
 
 export interface SagaIteration<State>{
   state: State;
