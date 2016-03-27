@@ -66,3 +66,23 @@ return saga$ => saga$
   .map(toPayload)
   .do(payload => { ... });
 ```
+
+#### applySelector<T,V>(selector: Observable<T> => Observable<V>)
+Applies a selector function to the _state_ part of a saga iteration, returning
+a new saga iteration composed of the action and the selected piece of state
+
+__Params__
+* `selector` __Observable<T> => Observable<V>__ Selector function to apply to the state
+
+_Returns_ `Observable<SagaIteration<V>>`
+
+```ts
+function selectTodos() {
+  return (state$: Observable<{ todos: string[] }>) => state$
+    .map(s => s.todos)
+    .distinctUntilChanged();
+}
+
+return saga$ => saga$
+  .let(applySelector(selectTodos))
+```
