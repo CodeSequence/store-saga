@@ -28,11 +28,7 @@ describe('@ngrx/store Saga Middleware', function() {
 
       return injector.get(Store);
     }
-
-    it('should pass!', function(){
-      expect(true).toBe(true);
-    });
-
+    
     it('should should pass a saga$ observable with the latest action and state', function() {
       let state: number, action: Action;
       const saga = createSaga<number>(() => saga$ => saga$.do(saga => {
@@ -110,15 +106,12 @@ describe('@ngrx/store Saga Middleware', function() {
     it('should let you pause an effect', function() {
       const watch = 'Watch';
       const next = 'Next';
+      let callCount = 0;
       const effect = createSaga(() => saga$ => saga$
         .filter(whenAction(watch))
         .map(() => ({ type: next }))
+        .do(() => ++callCount)
       );
-      let callCount = 0;
-
-      dispatcher.filter(action => action.type === next).subscribe(() => {
-        ++callCount;
-      });
 
       runner.run(effect);
       runner.next({ action: { type: watch }, state: {} });
