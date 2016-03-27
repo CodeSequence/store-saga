@@ -58,14 +58,14 @@ Consider the following simple counter component:
   `
 })
 class Counter {
-  value = Math.rand() * 30;
+  value = Math.random() * 30;
 
   add() {
     this.value = this.value + 1;
   }
 }
 ```
-It receives input from an event binding in the template, but it relies on a hidden input: `Math.rand()`. These _hidden inputs_ can be thought of as side effects. If you use this `<counter />` component anywhere in your application, it has unknown consequences. If you write components that have side effects, they are generally harder to test and make it more difficult to reason about the correctness of your application.
+It receives input from an event binding in the template, but it relies on a hidden input: `Math.random()`. These _hidden inputs_ can be thought of as side effects. If you use this `<counter />` component anywhere in your application, it has unknown consequences. If you write components that have side effects, they are generally harder to test and make it more difficult to reason about the correctness of your application.
 
 A very common source of side effects in apps are Http requests. If a component makes an Http request or injects a service that makes a request, you are introducing side effects into your component. Components with side effects are considered _impure_. This is because an Http request - even if you are injecting the Http service - has unknown consequences. Before you make the request you have no guarantee if the request will succeed or fail.
 
