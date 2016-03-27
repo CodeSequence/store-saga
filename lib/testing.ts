@@ -15,6 +15,7 @@ export class SagaTester extends SagaRunner{
     const dispatcher = new BehaviorSubject(undefined);
     super(injector, dispatcher, undefined, []);
 
+    this._scheduler = asap;
     this.output = dispatcher;
   }
 
@@ -32,9 +33,5 @@ export class SagaTester extends SagaRunner{
 
   get last(){
     return this.output.getValue();
-  }
-
-  protected _connect(saga: Saga<any>): Subscription {
-    return Observable.from(saga(this._iterable), asap).subscribe(this.output);
   }
 }

@@ -1,8 +1,12 @@
 import 'rxjs/add/observable/from';
+import 'rxjs/add/operator/observeOn';
+import 'rxjs/add/operator/let';
 import { async } from 'rxjs/scheduler/async';
 import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
+import { Scheduler } from 'rxjs/Scheduler';
 import { Observable } from 'rxjs/Observable';
+import { NextObserver } from 'rxjs/Observer';
 import {
   Injectable,
   OpaqueToken,
@@ -15,13 +19,14 @@ import {
 } from 'angular2/core';
 import { Action, Dispatcher } from '@ngrx/store';
 
-import { Saga } from './interfaces';
+import { Saga, SagaIteration } from './interfaces';
 
 export const INIT_SAGAS = new OpaqueToken('@ngrx/store/sagas Bootstrap');
 
 @Injectable()
-export class SagaRunner {
-  protected _iterable: Subject<any>;
+export class SagaRunner implements NextObserver<SagaIteration<any>> {
+  protected _iterable: Subject<SagaIteration<any>>;
+  protected _scheduler: Scheduler = async;
   private _resolvedSagas: Map<Provider, Saga<any>>;
   private _runningSagas: Map<Saga<any>, Subscription>;
 
@@ -32,7 +37,7 @@ export class SagaRunner {
     @Optional() @Inject(INIT_SAGAS) initSagas: Provider[]
   ) {
     if( !_parent ) {
-      this._iterable = new Subject();
+      this._iterable = new Subject<SagaIteration<any>>();
       this._resolvedSagas = new Map<Provider, Saga<any>>();
       this._runningSagas = new Map<Saga<any>, Subscription>();
 
@@ -42,7 +47,7 @@ export class SagaRunner {
     }
   }
 
-  private _next(update: { state: any, action: any }) {
+  private _next(update: SagaIteration<any>) {
     this._iterable.next(update);
   }
 
@@ -54,8 +59,11 @@ export class SagaRunner {
     this._next(update);
   }
 
-  protected _connect(saga: Saga<any>): Subscription {
-    return Observable.from(saga(this._iterable), async).subscribe(this._dispatcher);
+  private _connect(saga: Saga<any>): Subscription {
+    return this._iterable
+      .let(saga)
+      .observeOn(this._scheduler)
+      .subscribe(this._dispatcher);
   }
 
   private _run(saga: Provider, injector: Injector){
