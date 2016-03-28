@@ -12,3 +12,7 @@ before_install:
 
 after_script:
   - codeclimate-test-reporter < lcov.info
+
+addons:
+    code_climate:
+        repo_token: 675d45f71b58f3b5d6c1eb2b7b5e5499098131a0f6225063f3ba52defb90f5b4
