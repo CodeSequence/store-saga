@@ -1,6 +1,7 @@
 # store-saga
-## Side Effect Model for [@ngrx/store](https://github.com/ngrx/store)
+### Side Effect Model for [@ngrx/store](https://github.com/ngrx/store)
 [![Build Status](https://travis-ci.org/CodeSequence/store-saga.svg?branch=master)](https://travis-ci.org/CodeSequence/store-saga) [![Code Climate](https://codeclimate.com/github/CodeSequence/store-saga/badges/gpa.svg)](https://codeclimate.com/github/CodeSequence/store-saga) [![Test Coverage](https://codeclimate.com/github/CodeSequence/store-saga/badges/coverage.svg)](https://codeclimate.com/github/CodeSequence/store-saga/coverage)
+
 An Rx implementation of redux-saga for @ngrx/store and Angular 2.
 
 Based on [redux-saga-rxjs](https://github.com/salsita/redux-saga-rxjs) by Salsita, with inspiration from [redux-saga](https://github.com/yelouafi/redux-saga) by Yelouafi.
