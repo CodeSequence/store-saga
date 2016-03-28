@@ -9,6 +9,7 @@ node_js:
 
 before_install:
   - npm install npm@3 -g
+  - npm install codeclimate-test-reporter -g
 
 after_script:
   - codeclimate-test-reporter < coverage/lcov.info
