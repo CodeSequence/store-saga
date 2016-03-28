@@ -1,9 +1,16 @@
 # store-saga
+## Side Effect Model for [@ngrx/store](https://github.com/ngrx/store)
+[![Build Status](https://travis-ci.org/CodeSequence/store-saga.svg?branch=master)](https://travis-ci.org/CodeSequence/store-saga) [![Code Climate](https://codeclimate.com/github/CodeSequence/store-saga/badges/gpa.svg)](https://codeclimate.com/github/CodeSequence/store-saga) [![Test Coverage](https://codeclimate.com/github/CodeSequence/store-saga/badges/coverage.svg)](https://codeclimate.com/github/CodeSequence/store-saga/coverage)
 An Rx implementation of redux-saga for @ngrx/store and Angular 2.
 
 Based on [redux-saga-rxjs](https://github.com/salsita/redux-saga-rxjs) by Salsita, with inspiration from [redux-saga](https://github.com/yelouafi/redux-saga) by Yelouafi.
 
-## Usage
+### Documentation
+* [Utilities](docs/utilities.md) - Information on various utility functions
+* [SagaRunner](docs/saga-runner.md) - Use the `SagaRunner` service to run, stop, and pause saga effects dynamically
+* [Testing](docs/testing.md) - Learn how to test saga effects using the provided `SagaTester` service
+
+### Usage
 `store-saga` depends on @ngrx/store and Angular 2. After configuring @ngrx/store, install `store-saga`:
 
 ```bash
@@ -34,12 +41,9 @@ bootstrap(App, [
 ]);
 ```
 
-## Documentation
-* [Utilities](docs/utilities.md) - Information on various utility functions
-* [SagaRunner](docs/saga-runner.md) - Use the `SagaRunner` service to run, stop, and pause saga effects dynamically
-* [Testing](docs/testing.md) - Learn how to test saga effects using the provided `SagaTester` service
 
-## Motivation
+
+### Motivation
 Angular 2 components can receive visible input from a few different sources:
   * Inputs injected into the constructor using dependency injection
   * Inputs provided by property bindings using the `@Input()` decorator
@@ -47,7 +51,7 @@ Angular 2 components can receive visible input from a few different sources:
 
 A _pure_ component has no invisible inputs, instead relying on the above strategies for accepting input.
 
-### How can an input be _invisible_ ?
+#### How can an input be _invisible_ ?
 Consider the following simple counter component:
 ```js
 @Component({
@@ -71,7 +75,7 @@ A very common source of side effects in apps are Http requests. If a component m
 
 If you are using @ngrx/store in your application to manage state, you are already doing a lot of the work necessary to make your components more pure. However @ngrx/store does not provide any way to deal with side effects out-of-the-box. Sagas are just that: a way to isolate side effects in your application so that you can write pure components.
 
-## How do they work?
+### How do they work?
 In store-saga, sagas are simply functions that accept a `saga$` observable and return a new observable of actions. The `saga$` observable emits every time state changes, providing you with the new state and the action that caused state to update. You filter over the `saga$` observable to listen for specific actions or state changes in your application, execute side-effect producing code, and return new actions to dispatch.
 
 For example, imagine building a `<login-form />` component that accepts a username and password. In order to verify authentication you need to make an Http request to your authentication server. This request is a side-effect and should be isolated from our `<login-form />` component. To do this, we will have the component dispatch an `AUTH_REQUEST` action when the user submits the form:
