@@ -1,7 +1,6 @@
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/observeOn';
 import 'rxjs/add/operator/let';
-import { async } from 'rxjs/scheduler/async';
 import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
 import { Scheduler } from 'rxjs/Scheduler';
@@ -19,6 +18,8 @@ import {
 } from 'angular2/core';
 import { Action, Dispatcher } from '@ngrx/store';
 
+import { async } from 'rxjs/scheduler/async';
+import { SagaScheduler } from './scheduler';
 import { Saga, SagaIteration } from './interfaces';
 
 export const INIT_SAGAS = new OpaqueToken('@ngrx/store/sagas Bootstrap');
@@ -26,13 +27,13 @@ export const INIT_SAGAS = new OpaqueToken('@ngrx/store/sagas Bootstrap');
 @Injectable()
 export class SagaRunner implements NextObserver<SagaIteration<any>> {
   protected _iterable: Subject<SagaIteration<any>>;
-  protected _scheduler: Scheduler = async;
   private _resolvedSagas: Map<Provider, Saga<any>>;
   private _runningSagas: Map<Saga<any>, Subscription>;
 
   constructor(
     private _injector: Injector,
     @Inject(Dispatcher) private _dispatcher: Subject<Action>,
+    @Inject(SagaScheduler) private _scheduler: Scheduler,
     @Optional() @SkipSelf() private _parent: SagaRunner,
     @Optional() @Inject(INIT_SAGAS) initSagas: Provider[]
   ) {
@@ -60,10 +61,17 @@ export class SagaRunner implements NextObserver<SagaIteration<any>> {
   }
 
   private _connect(saga: Saga<any>): Subscription {
-    return this._iterable
-      .let(saga)
-      .observeOn(this._scheduler)
-      .subscribe(this._dispatcher);
+    if (this._scheduler) {
+      return this._iterable
+        .let(saga)
+        .observeOn(this._scheduler)
+        .subscribe(this._dispatcher);
+    }
+    else {
+      return this._iterable
+        .let(saga)
+        .subscribe(this._dispatcher);
+    }
   }
 
   private _run(saga: Provider, injector: Injector){
