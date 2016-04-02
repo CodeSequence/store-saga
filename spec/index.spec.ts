@@ -2,7 +2,8 @@ import './test_harness';
 import {Injector, Provider} from 'angular2/core';
 import {Observable} from 'rxjs/Observable';
 import {provideStore, Store, Action, Dispatcher, usePostMiddleware} from '@ngrx/store';
-import {Saga, SagaRunner, createSaga, whenAction, installSagaMiddleware} from '../lib';
+import {Saga, SagaRunner, schedulerProvider, SagaScheduler, createSaga, whenAction, installSagaMiddleware} from '../lib';
+import {SagaTester} from '../lib/testing';
 
 const ADD = 'ADD';
 const SUBTRACT = 'SUBTRACT';
@@ -19,16 +20,18 @@ function reducer(state: number = 0, action) {
 }
 
 describe('@ngrx/store Saga Middleware', function() {
-  describe('Middleware', function() {
-    function runSaga(saga: Provider): Store<number> {
-      const injector = Injector.resolveAndCreate([
-        provideStore(reducer, 0),
-        installSagaMiddleware(saga)
-      ]);
 
-      return injector.get(Store);
-    }
-    
+  function runSaga(saga: Provider): Store<number> {
+    const injector = Injector.resolveAndCreate([
+      provideStore(reducer, 0),
+      installSagaMiddleware(saga),
+      schedulerProvider
+    ]);
+
+    return injector.get(Store);
+  }
+
+  describe('Middleware', function() {
     it('should should pass a saga$ observable with the latest action and state', function() {
       let state: number, action: Action;
       const saga = createSaga<number>(() => saga$ => saga$.do(saga => {
@@ -73,7 +76,7 @@ describe('@ngrx/store Saga Middleware', function() {
     let dispatcher: Dispatcher<Action>;
 
     beforeEach(() => {
-      const rootInjector = Injector.resolveAndCreate([ Dispatcher, SagaRunner ]);
+      const rootInjector = Injector.resolveAndCreate([ Dispatcher, SagaRunner, schedulerProvider ]);
       const childInjector = rootInjector.resolveAndCreateChild([ SagaRunner ]);
 
       runner = rootInjector.get(SagaRunner);
@@ -177,4 +180,22 @@ describe('@ngrx/store Saga Middleware', function() {
       expect(child['_run']).not.toHaveBeenCalled();
     });
   });
+
+  describe('SagaTester', function() {
+
+    it('should use asap scheduler by default', function () {
+      const rootInjector = Injector.resolveAndCreate([ SagaTester ]);
+      let tester: SagaTester = rootInjector.get(SagaTester);
+
+      const saga = createSaga<number>(() => saga$ => saga$
+        .filter(whenAction(ADD))
+        .map(() => ({ type: SUBTRACT })));
+
+      tester.run(saga);
+
+      tester.sendAction({ type: ADD })
+      expect(tester.last).toEqual({ type: SUBTRACT })
+    });
+  });
+
 });

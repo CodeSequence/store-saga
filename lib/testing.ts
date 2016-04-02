@@ -1,4 +1,3 @@
-import { asap } from 'rxjs/scheduler/asap';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/subject/BehaviorSubject';
@@ -13,9 +12,9 @@ export class SagaTester extends SagaRunner{
 
   constructor(injector: Injector){
     const dispatcher = new BehaviorSubject(undefined);
-    super(injector, dispatcher, undefined, []);
 
-    this._scheduler = asap;
+    super(injector, dispatcher, undefined, undefined, []);
+
     this.output = dispatcher;
   }
 
