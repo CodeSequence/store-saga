@@ -1,12 +1,14 @@
 import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
+import { async } from 'rxjs/scheduler/async';
 
 import { Provider, provide, OpaqueToken, Injector } from 'angular2/core';
 import { POST_MIDDLEWARE, Dispatcher, Action, usePostMiddleware } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
 import { SagaRunner, INIT_SAGAS } from './runner';
+import { SagaScheduler } from './scheduler';
 import { SagaIteration, Saga, SagaFactory } from './interfaces';
 import { sagaMiddleware } from './middleware';
 
@@ -30,6 +32,7 @@ export function addInitSagas(...sagas: Provider[]): Provider[] {
 
 export function installSagaMiddleware(...sagas: Provider[]): Provider[] {
   return [
+    provide(SagaScheduler, { useValue: async }),
     provide(SagaRunner, { useClass: SagaRunner }),
     ...usePostMiddleware(sagaMiddleware),
     ...addInitSagas(...sagas)

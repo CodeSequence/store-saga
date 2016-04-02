@@ -9,7 +9,7 @@
     "test": "istanbul cover -x '**/spec/**' jasmine",
     "prebuild": "npm run clean",
     "build": "tsc",
-    "postbuild": "cp ./{readme.md,package.json} ./dist"
+    "postbuild": "cp ./{README.md,package.json} ./dist"
   },
   "repository": {
     "type": "git",
