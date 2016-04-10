@@ -7,10 +7,10 @@ import { Saga } from './interfaces';
 import { SagaRunner } from './runner';
 
 @Injectable()
-export class SagaTester extends SagaRunner{
+export class SagaTester extends SagaRunner {
   public output: BehaviorSubject<any>;
 
-  constructor(injector: Injector){
+  constructor(injector: Injector) {
     const dispatcher = new BehaviorSubject(undefined);
 
     super(injector, dispatcher, undefined, undefined, []);

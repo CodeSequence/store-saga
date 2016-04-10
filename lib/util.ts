@@ -12,8 +12,8 @@ import { SagaScheduler } from './scheduler';
 import { SagaIteration, Saga, SagaFactory } from './interfaces';
 import { sagaMiddleware } from './middleware';
 
-export function createSaga<T>(factory: SagaFactory<T>, deps: any[] = []){
-  if(factory.length !== deps.length) {
+export function createSaga<T>(factory: SagaFactory<T>, deps: any[] = []) {
+  if (factory.length !== deps.length) {
     throw new Error(`Cannot resolve all parameters for saga factory`);
   }
 
@@ -43,7 +43,7 @@ export function installSagaMiddleware(...sagas: Provider[]): Provider[] {
 export function whenAction(...types: string[]) {
   return function(iteration: SagaIteration<any>): boolean {
     return types.indexOf(iteration.action.type) >= 0;
-  }
+  };
 }
 
 export function toPayload(iteration: SagaIteration<any>): any {
@@ -55,7 +55,7 @@ export function all() {
 }
 
 
-export function applySelector<T,V>(selectorFn: (obs$: Observable<T>) => Observable<V>) {
+export function applySelector<T, V>(selectorFn: (obs$: Observable<T>) => Observable<V>) {
   return function(saga$: Observable<SagaIteration<T>>): Observable<SagaIteration<V>> {
     const selected$ = saga$.map(s => s.state).let(selectorFn);
 
@@ -67,7 +67,7 @@ export function applySelector<T,V>(selectorFn: (obs$: Observable<T>) => Observab
           state: selected
         };
       });
-  }
+  };
 }
 
 export function put(action: Action): Observable<Action> {

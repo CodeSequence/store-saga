@@ -37,12 +37,12 @@ export class SagaRunner implements NextObserver<SagaIteration<any>> {
     @Optional() @SkipSelf() private _parent: SagaRunner,
     @Optional() @Inject(INIT_SAGAS) initSagas: Provider[]
   ) {
-    if( !_parent ) {
+    if (!_parent) {
       this._iterable = new Subject<SagaIteration<any>>();
       this._resolvedSagas = new Map<Provider, Saga<any>>();
       this._runningSagas = new Map<Saga<any>, Subscription>();
 
-      if( !!initSagas ) {
+      if (!!initSagas) {
         initSagas.forEach(saga => this.run(saga));
       }
     }
@@ -53,7 +53,7 @@ export class SagaRunner implements NextObserver<SagaIteration<any>> {
   }
 
   next(update: { state: any, action: any }) {
-    if( this._parent ) {
+    if (this._parent) {
       return this._parent.next(update);
     }
 
@@ -74,14 +74,14 @@ export class SagaRunner implements NextObserver<SagaIteration<any>> {
     }
   }
 
-  private _run(saga: Provider, injector: Injector){
-    if( !this._resolvedSagas.has(saga) ) {
+  private _run(saga: Provider, injector: Injector) {
+    if (!this._resolvedSagas.has(saga)) {
       this._resolvedSagas.set(saga, injector.resolveAndInstantiate(saga));
     }
 
     const resolved = this._resolvedSagas.get(saga);
 
-    if( !this._runningSagas.has(resolved) ) {
+    if (!this._runningSagas.has(resolved)) {
       this._runningSagas.set(resolved, this._connect(resolved));
     }
     else {
@@ -90,7 +90,7 @@ export class SagaRunner implements NextObserver<SagaIteration<any>> {
   }
 
   run(saga: Provider, injector: Injector = this._injector) {
-    if( this._parent ) {
+    if (this._parent) {
       return this._parent.run(saga, injector);
     }
 
@@ -98,10 +98,10 @@ export class SagaRunner implements NextObserver<SagaIteration<any>> {
   }
 
   private _pause(saga: Provider) {
-    if( this._resolvedSagas.has(saga) ) {
+    if (this._resolvedSagas.has(saga)) {
       const resolved = this._resolvedSagas.get(saga);
 
-      if( this._runningSagas.has(resolved) ) {
+      if (this._runningSagas.has(resolved)) {
         const sub = this._runningSagas.get(resolved);
 
         sub.unsubscribe();
@@ -119,7 +119,7 @@ export class SagaRunner implements NextObserver<SagaIteration<any>> {
   }
 
   pause(saga: Provider) {
-    if( this._parent ) {
+    if (this._parent) {
       return this._parent.pause(saga);
     }
 
@@ -129,7 +129,7 @@ export class SagaRunner implements NextObserver<SagaIteration<any>> {
   private _stop(saga: Provider) {
     this.pause(saga);
 
-    if(this._resolvedSagas.has(saga)) {
+    if (this._resolvedSagas.has(saga)) {
       this._resolvedSagas.delete(saga);
     }
     else {
@@ -138,7 +138,7 @@ export class SagaRunner implements NextObserver<SagaIteration<any>> {
   }
 
   stop(saga: Provider) {
-    if( this._parent ) {
+    if (this._parent) {
       return this._parent.stop(saga);
     }
 

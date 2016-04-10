@@ -11,5 +11,5 @@ export interface Saga<State>{
 }
 
 export interface SagaFactory<State>{
-  (...deps: any[]): Saga<State>
+  (...deps: any[]): Saga<State>;
 }
