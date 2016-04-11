@@ -1,8 +1,8 @@
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/observeOn';
 import 'rxjs/add/operator/let';
+import 'rxjs/add/operator/withLatestFrom';
 import { Subscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs/Subject';
 import { Scheduler } from 'rxjs/Scheduler';
 import { Observable } from 'rxjs/Observable';
 import { NextObserver } from 'rxjs/Observer';
@@ -16,62 +16,34 @@ import {
   SkipSelf,
   Optional
 } from 'angular2/core';
-import { Action, Dispatcher } from '@ngrx/store';
+import { Dispatcher, Store } from '@ngrx/store';
 
 import { async } from 'rxjs/scheduler/async';
-import { SagaScheduler } from './scheduler';
 import { Saga, SagaIteration } from './interfaces';
 
-export const INIT_SAGAS = new OpaqueToken('@ngrx/store/sagas Bootstrap');
-
 @Injectable()
-export class SagaRunner implements NextObserver<SagaIteration<any>> {
-  protected _iterable: Subject<SagaIteration<any>>;
+export class SagaRunner {
+  protected _iterable: Observable<SagaIteration<any>>;
   private _resolvedSagas: Map<Provider, Saga<any>>;
   private _runningSagas: Map<Saga<any>, Subscription>;
 
   constructor(
+    @Inject(Store) store: Observable<any>,
+    @Inject(Dispatcher) private _dispatcher: Dispatcher<any>,
     private _injector: Injector,
-    @Inject(Dispatcher) private _dispatcher: Subject<Action>,
-    @Inject(SagaScheduler) private _scheduler: Scheduler,
-    @Optional() @SkipSelf() private _parent: SagaRunner,
-    @Optional() @Inject(INIT_SAGAS) initSagas: Provider[]
+    @Optional() @SkipSelf() private _parent: SagaRunner
   ) {
     if (!_parent) {
-      this._iterable = new Subject<SagaIteration<any>>();
       this._resolvedSagas = new Map<Provider, Saga<any>>();
       this._runningSagas = new Map<Saga<any>, Subscription>();
-
-      if (!!initSagas) {
-        initSagas.forEach(saga => this.run(saga));
-      }
+      this._iterable = store
+        .withLatestFrom(_dispatcher)
+        .map(([ state, action ]) => ({ state, action }));
     }
   }
 
-  private _next(update: SagaIteration<any>) {
-    this._iterable.next(update);
-  }
-
-  next(update: { state: any, action: any }) {
-    if (this._parent) {
-      return this._parent.next(update);
-    }
-
-    this._next(update);
-  }
-
-  private _connect(saga: Saga<any>): Subscription {
-    if (this._scheduler) {
-      return this._iterable
-        .let(saga)
-        .observeOn(this._scheduler)
-        .subscribe(this._dispatcher);
-    }
-    else {
-      return this._iterable
-        .let(saga)
-        .subscribe(this._dispatcher);
-    }
+  protected _connect(saga: Saga<any>): Subscription {
+    return this._iterable.let(saga).subscribe(this._dispatcher);
   }
 
   private _run(saga: Provider, injector: Injector) {

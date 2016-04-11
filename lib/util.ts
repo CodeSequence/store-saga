@@ -3,40 +3,36 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
 import { async } from 'rxjs/scheduler/async';
 
-import { Provider, provide, OpaqueToken, Injector } from 'angular2/core';
+import { Provider, OpaqueToken, Injector, APP_INITIALIZER, Type } from 'angular2/core';
 import { POST_MIDDLEWARE, Dispatcher, Action, usePostMiddleware } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
-import { SagaRunner, INIT_SAGAS } from './runner';
-import { SagaScheduler } from './scheduler';
+import { SagaRunner } from './runner';
 import { SagaIteration, Saga, SagaFactory } from './interfaces';
-import { sagaMiddleware } from './middleware';
 
 export function createSaga<T>(factory: SagaFactory<T>, deps: any[] = []) {
   if (factory.length !== deps.length) {
     throw new Error(`Cannot resolve all parameters for saga factory`);
   }
 
-  return provide(new OpaqueToken('@ngrx/store Saga Effect'), {
+  return new Provider(new OpaqueToken('@ngrx/store Saga Effect'), {
     deps,
     useFactory: factory
   });
 }
 
-export function addInitSagas(...sagas: Provider[]): Provider[] {
-  return sagas.map(saga => provide(INIT_SAGAS, {
+export function runSagasOnBootstrap(...sagas: Provider[]): (Provider | Type)[] {
+  const runSagasProvider = new Provider(APP_INITIALIZER, {
     multi: true,
-    useValue: saga
-  }));
-}
+    deps: [ SagaRunner ],
+    useFactory(runner: SagaRunner) {
+      sagas.forEach(saga => runner.run(saga));
 
-export function installSagaMiddleware(...sagas: Provider[]): Provider[] {
-  return [
-    provide(SagaScheduler, { useValue: async }),
-    provide(SagaRunner, { useClass: SagaRunner }),
-    ...usePostMiddleware(sagaMiddleware),
-    ...addInitSagas(...sagas)
-  ];
+      return Promise.resolve(true);
+    }
+  });
+
+  return [ SagaRunner, runSagasProvider ];
 }
 
 

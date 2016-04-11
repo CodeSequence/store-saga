@@ -16,7 +16,8 @@
     "lib/util.ts",
     "lib/scheduler.ts",
 		"lib/testing.ts",
-		"lib/middleware.ts"
+		"lib/middleware.ts",
+		"lib/run-sagas-on-bootstrap.ts"
 	],
 	"exclude": [
 		"node_modules"
