@@ -23,8 +23,8 @@ Write a saga:
 import {createSaga} from 'store-saga';
 
 export const increment = createSaga(function(){
-  return saga$ => saga$
-    .filter(saga => saga.action.type === 'DECREMENT')
+  return iteration$ => iteration$
+    .filter(iter => iter.action.type === 'DECREMENT')
     .map(() => {
       return { type: 'INCREMENT'}
     });
@@ -121,10 +121,10 @@ export class LoginForm {
 Now we can write a saga that listens for the `AUTH_REQUESTED` action and makes the Http request. If the request succeeds, we will dispatch an `AUTH_SUCCESS` action and if the request fails we will dispatch an `AUTH_FAILURE` action:
 
 ```js
-const loginEffect = createSaga(function(http: Http) {
+const loginEffect = createSaga(function loginSagaFactory(http: Http) {
 
-  return function(saga$: Observable<any>) {
-    return saga$
+  return function loginSaga(iteration$: Observable<any>) {
+    return iteration$
       .filter(iteration => iteration.action.type === 'AUTH_REQUESTED')
       .map(iteration => iteration.action.payload)
       .mergeMap(payload => {
