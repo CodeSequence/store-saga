@@ -42,8 +42,6 @@ bootstrap(App, [
 ]);
 ```
 
-
-
 ### Motivation
 Angular 2 components can receive visible input from a few different sources:
   * Inputs injected into the constructor using dependency injection
@@ -118,7 +116,7 @@ export class LoginForm {
 }
 ```
 
-Now we can write a saga that listens for the `AUTH_REQUESTED` action and makes the Http request. If the request succeeds, we will dispatch an `AUTH_SUCCESS` action and if the request fails we will dispatch an `AUTH_FAILURE` action:
+Now we can write a saga that listens for the `AUTH_REQUESTED` action being dispatched and makes the Http request. If the request succeeds, we will return an `AUTH_SUCCESS` action and if the request fails we will return an `AUTH_FAILURE` action (returned action will be dispatched by store-saga middleware):
 
 ```js
 const loginEffect = createSaga(function loginSagaFactory(http: Http) {
