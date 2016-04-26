@@ -7,12 +7,13 @@ import { Scheduler } from 'rxjs/Scheduler';
 import { Observable } from 'rxjs/Observable';
 import { NextObserver } from 'rxjs/Observer';
 import {
+  Inject,
+  Injector,
   Injectable,
   OpaqueToken,
   provide,
   Provider,
-  Injector,
-  Inject,
+  ReflectiveInjector,
   SkipSelf,
   Optional
 } from 'angular2/core';
@@ -31,7 +32,7 @@ export class SagaRunner implements NextObserver<SagaIteration<any>> {
   private _runningSagas: Map<Saga<any>, Subscription>;
 
   constructor(
-    private _injector: Injector,
+    @Inject(Injector) private _injector: ReflectiveInjector,
     @Inject(Dispatcher) private _dispatcher: Subject<Action>,
     @Inject(SagaScheduler) private _scheduler: Scheduler,
     @Optional() @SkipSelf() private _parent: SagaRunner,
@@ -74,7 +75,7 @@ export class SagaRunner implements NextObserver<SagaIteration<any>> {
     }
   }
 
-  private _run(saga: Provider, injector: Injector){
+  private _run(saga: Provider, injector: ReflectiveInjector){
     if( !this._resolvedSagas.has(saga) ) {
       this._resolvedSagas.set(saga, injector.resolveAndInstantiate(saga));
     }
@@ -89,7 +90,7 @@ export class SagaRunner implements NextObserver<SagaIteration<any>> {
     }
   }
 
-  run(saga: Provider, injector: Injector = this._injector) {
+  run(saga: Provider, injector: ReflectiveInjector = this._injector) {
     if( this._parent ) {
       return this._parent.run(saga, injector);
     }

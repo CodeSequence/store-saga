@@ -1,5 +1,5 @@
 import './test_harness';
-import {Injector, Provider} from 'angular2/core';
+import {ReflectiveInjector, Provider} from 'angular2/core';
 import {Observable} from 'rxjs/Observable';
 import {provideStore, Store, Action, Dispatcher, usePostMiddleware} from '@ngrx/store';
 import {Saga, SagaRunner, schedulerProvider, SagaScheduler, createSaga, whenAction, installSagaMiddleware} from '../lib';
@@ -22,7 +22,7 @@ function reducer(state: number = 0, action) {
 describe('@ngrx/store Saga Middleware', function() {
 
   function runSaga(saga: Provider): Store<number> {
-    const injector = Injector.resolveAndCreate([
+    const injector = ReflectiveInjector.resolveAndCreate([
       provideStore(reducer, 0),
       installSagaMiddleware(saga),
       schedulerProvider
@@ -76,7 +76,7 @@ describe('@ngrx/store Saga Middleware', function() {
     let dispatcher: Dispatcher<Action>;
 
     beforeEach(() => {
-      const rootInjector = Injector.resolveAndCreate([ Dispatcher, SagaRunner, schedulerProvider ]);
+      const rootInjector = ReflectiveInjector.resolveAndCreate([ Dispatcher, SagaRunner, schedulerProvider ]);
       const childInjector = rootInjector.resolveAndCreateChild([ SagaRunner ]);
 
       runner = rootInjector.get(SagaRunner);
@@ -184,7 +184,7 @@ describe('@ngrx/store Saga Middleware', function() {
   describe('SagaTester', function() {
 
     it('should use asap scheduler by default', function () {
-      const rootInjector = Injector.resolveAndCreate([ SagaTester ]);
+      const rootInjector = ReflectiveInjector.resolveAndCreate([ SagaTester ]);
       let tester: SagaTester = rootInjector.get(SagaTester);
 
       const saga = createSaga<number>(() => saga$ => saga$

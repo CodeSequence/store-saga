@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/subject/BehaviorSubject';
-import { Injectable, Injector } from 'angular2/core';
+import { Injectable, Injector, Inject, ReflectiveInjector } from 'angular2/core';
 
 import { Saga } from './interfaces';
 import { SagaRunner } from './runner';
@@ -10,7 +10,7 @@ import { SagaRunner } from './runner';
 export class SagaTester extends SagaRunner{
   public output: BehaviorSubject<any>;
 
-  constructor(injector: Injector){
+  constructor(@Inject(Injector) injector: ReflectiveInjector){
     const dispatcher = new BehaviorSubject(undefined);
 
     super(injector, dispatcher, undefined, undefined, []);
