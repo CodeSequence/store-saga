@@ -1,7 +1,7 @@
 import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
-import { Provider } from 'angular2/core';
+import { Provider } from '@angular/core';
 import { createMiddleware, Dispatcher } from '@ngrx/store';
 
 import { SagaRunner } from './runner';

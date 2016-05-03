@@ -6,7 +6,7 @@ Extending from our `authEffect` example written in the _Getting Started_ guide, 
 _Note: for this example I am using respond-ng, a simple Http mocking library I wrote to make unit testing Http calls easier_
 
 ```ts
-import {Injector} from 'angular2/core';
+import {Injector} from '@angular/core';
 import RESPOND_PROVIDERS, {Respond} from 'respond-ng';
 import {SagaTester} from 'store-saga/testing';
 

@@ -3,7 +3,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
 import { async } from 'rxjs/scheduler/async';
 
-import { Provider, provide, OpaqueToken, Injector } from 'angular2/core';
+import { Provider, provide, OpaqueToken, Injector } from '@angular/core';
 import { POST_MIDDLEWARE, Dispatcher, Action, usePostMiddleware } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 

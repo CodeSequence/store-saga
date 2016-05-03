@@ -16,7 +16,7 @@ import {
   ReflectiveInjector,
   SkipSelf,
   Optional
-} from 'angular2/core';
+} from '@angular/core';
 import { Action, Dispatcher } from '@ngrx/store';
 
 import { async } from 'rxjs/scheduler/async';

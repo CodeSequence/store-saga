@@ -1,5 +1,5 @@
 import './test_harness';
-import {ReflectiveInjector, Provider} from 'angular2/core';
+import {ReflectiveInjector, Provider} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {provideStore, Store, Action, Dispatcher, usePostMiddleware} from '@ngrx/store';
 import {Saga, SagaRunner, schedulerProvider, SagaScheduler, createSaga, whenAction, installSagaMiddleware} from '../lib';

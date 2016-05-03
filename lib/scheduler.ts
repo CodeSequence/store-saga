@@ -1,4 +1,4 @@
-import {provide, Provider, OpaqueToken} from 'angular2/core';
+import {provide, Provider, OpaqueToken} from '@angular/core';
 import { async } from 'rxjs/scheduler/async';
 
 export const SagaScheduler = new OpaqueToken('@ngrx/store/sagas Scheduler');

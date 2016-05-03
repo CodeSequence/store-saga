@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Injectable, Injector, Inject, ReflectiveInjector } from 'angular2/core';
+import { Injectable, Injector, Inject, ReflectiveInjector } from '@angular/core';
 
 import { Saga } from './interfaces';
 import { SagaRunner } from './runner';
