@@ -6,6 +6,9 @@ An Rx implementation of redux-saga for @ngrx/store and Angular 2.
 
 Based on [redux-saga-rxjs](https://github.com/salsita/redux-saga-rxjs) by Salsita, with inspiration from [redux-saga](https://github.com/yelouafi/redux-saga) by Yelouafi.
 
+## This project has been deprecated
+The middleware API has been removed in Store v2.0. For this reason, there will be no further development for store-saga. PRs to fix bugs will always be welcome. For upgrading to Store v2.0, please checkout [@ngrx/effects](https://github.com/ngrx/effects).
+
 ### Documentation
 * [Utilities](docs/utilities.md) - Information on various utility functions
 * [SagaRunner](docs/saga-runner.md) - Use the `SagaRunner` service to run, stop, and pause saga effects dynamically
